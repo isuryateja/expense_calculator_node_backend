@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+enum CATEGORIES {
+  SHOPPING
+  INTERNET
+  LOANS
+  RESTAURANTS
+  MOBILE
+}
+
+enum SOURCES {
+  SALARY
+  GIFTS
+}
+
+model Balance {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  balance Int
+  type    String
+}
+
+model Spending {
+  id       String      @id @default(auto()) @map("_id") @db.ObjectId
+  for      String
+  amount   Int
+  on       DateTime    @default(now())
+  category CATEGORIES? @default(SHOPPING)
+  comment  String?
+}
+
+model Earning {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  from     String
+  amount   Int
+  on       DateTime @default(now())
+  category SOURCES? @default(SALARY)
+  comment  String?
+}
